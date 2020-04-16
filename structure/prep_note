@@ -1,0 +1,14 @@
+cp ../../../ribosome/6qnr-pdb-bundle/align/full_ribo/A-tRNA_only/combine/6qnr-bioassembly1-phe.adjusted.box.mod.pdb .
+
+cp ../../../ribosome/6qnr-pdb-bundle/align/full_ribo/A-tRNA_only/combine/6qnr-AT.pdb .
+
+
+smog2 -i 6qnr-bioassembly1-phe.adjusted.box.mod.noL10.nofirstU.pdb -t /Users/ellenwang/Documents/SMOG/smog_templates/SBM_AA_0.96_modRes -dname 6qnr-AA.noL10.nofirstU
+
+smog2 -i 6qnr-AT.noL10.nofirstU.pdb -t /Users/ellenwang/Documents/SMOG/smog_templates/SBM_AA_0.96_modRes -dname 6qnr-AT.noL10.nofirstU
+
+python3 ../../prep_contact_0.4/necessary_scripts/unique_contacts.py -orig_pdb 6qnr-bioassembly1-phe.adjusted.box.mod.noL10.nofirstU.pdb -ref_pdb 6qnr-AT.noL10.nofirstU.pdb -exclusions top5_exclusions.6qnr_AA.std_smog.itp -orig_pairs top4_pairs.6qnr_AA.std_smog.itp -out_pairs top4_pairs.6qnr_AA.std_smog.contact_0.4.itp -A_start 51748 -A_end 53385 -factor 0.4 -out_uniq AtRNA_unique.txt
+
+smog_scale-energies -f temp_6qnr-AA.noL10.nofirstU.contact_0.4.top -n elbow_cca.noL10.nofirstU.ndx -rc 0 -of temp_6qnr-AA.noL10.nofirstU.contact_0.4.noCCA_contact.top
+
+

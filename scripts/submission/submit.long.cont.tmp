@@ -1,0 +1,22 @@
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH --time=1:00:00
+#SBATCH -J cont.RNUM1.LNUM2
+#SBATCH -p express
+
+START=1
+
+sed "s/PART/$START/g" submit2 > submit2.next
+JOBID=`sbatch submit2.next | sed 's/>//g;s/<//g' | awk '{print $4}'`
+echo "$START $JOBID"
+
+for p in `seq $((START+1)) 14`
+do
+	sed "s/PART/$p/g" submit2 > submit2.next
+	JOBID=`sbatch --dependency=afterany:${JOBID} submit2.next | sed 's/>//g;s/<//g' | awk '{print $4}'`
+	echo "$p $JOBID"
+	sleep 2
+done
+cd -
+sleep 1

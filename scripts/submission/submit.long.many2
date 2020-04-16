@@ -1,0 +1,55 @@
+PARTITION=large
+nodes=4
+procs=32
+omppr=7
+ddcomp="4 1 8"
+
+for R in `seq 3.2 0.2 4.0`
+do
+	for L in 7
+	do
+		mkdir -p T60.eps400.long/R.$R.L.$L
+		sed "s/NUM1/$R/g; s/NUM2/$L/g; s/NNODES/$nodes/g; s/NPROCS/$procs/g; s/OMPPR/$omppr/g; s/DDCOMP/$ddcomp/g; s/partition/$PARTITION/g" submit.singleruns.tmp  > T60.eps400.long/R.$R.L.$L/submit1
+		sed "s/NUM1/$R/g; s/NUM2/$L/g; s/NNODES/$nodes/g; s/NPROCS/$procs/g; s/OMPPR/$omppr/g; s/DDCOMP/$ddcomp/g; s/partition/$PARTITION/g" submit.singleruns_2.tmp  > T60.eps400.long/R.$R.L.$L/submit2
+		
+		cd T60.eps400.long/R.$R.L.$L
+		JOBID=`sbatch submit1 | sed 's/>//g;s/<//g' | awk '{print $4}'`
+		echo "ORIG $R $L  $JOBID"
+		
+		for p in `seq 1 10`
+		do
+			sed "s/PART/$p/g" submit2 > submit2.next
+			JOBID=`sbatch --dependency=afterany:${JOBID} submit2.next | sed 's/>//g;s/<//g' | awk '{print $4}'`
+			echo "$p $JOBID"
+			sleep 2
+		done
+		cd -
+		sleep 1
+
+	done
+done
+
+for R in `seq 4.2 0.2 5.0`
+do
+	for L in `seq 5 8`
+	do
+		mkdir -p T60.eps400.long/R.$R.L.$L
+		sed "s/NUM1/$R/g; s/NUM2/$L/g; s/NNODES/$nodes/g; s/NPROCS/$procs/g; s/OMPPR/$omppr/g; s/DDCOMP/$ddcomp/g; s/partition/$PARTITION/g" submit.singleruns.tmp  > T60.eps400.long/R.$R.L.$L/submit1
+		sed "s/NUM1/$R/g; s/NUM2/$L/g; s/NNODES/$nodes/g; s/NPROCS/$procs/g; s/OMPPR/$omppr/g; s/DDCOMP/$ddcomp/g; s/partition/$PARTITION/g" submit.singleruns_2.tmp  > T60.eps400.long/R.$R.L.$L/submit2
+		
+		cd T60.eps400.long/R.$R.L.$L
+		JOBID=`sbatch submit1 | sed 's/>//g;s/<//g' | awk '{print $4}'`
+		echo "ORIG $R $L $JOBID"
+		
+		for p in `seq 1 10`
+		do
+			sed "s/PART/$p/g" submit2 > submit2.next
+			JOBID=`sbatch --dependency=afterany:${JOBID} submit2.next | sed 's/>//g;s/<//g' | awk '{print $4}'`
+			echo "$p $JOBID"
+			sleep 2
+		done
+		cd -
+		sleep 1
+
+	done
+done

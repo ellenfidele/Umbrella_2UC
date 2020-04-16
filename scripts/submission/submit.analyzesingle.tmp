@@ -1,0 +1,61 @@
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH --tasks-per-node=4
+#SBATCH --cpus-per-task=2
+#SBATCH --time=24:00:00
+#SBATCH -J analyze.RNUM1
+#SBATCH -p short
+
+GMX=/home/whitford/BIN/nd/gmx-5.1.4_gnu6_openmpi3.1.2/bin/gmx_mpi
+#GMX=/home/whitford/BIN/nd/gmx-5.1.4_gnu6_openmpi3.1.2_redwood/bin/gmx_mpi
+
+RELBOW=NUM1
+dir=/scratch/ellenwang/Umbrella/full_ribo_umbRun/std_smog_trial2
+top=$dir/system/6qnr-AA.noL10.nofirstU.condense.top
+#ndx=$dir/system/elbow_cca.noL10.nofirstU.ndx
+ndx=$dir/system/Rarm.noL10.nofirstU.ndx
+#outdir=$dir/Xelbow/R.NUM1
+outdir=$dir/Rarm
+
+EPS=400
+TEMPP=60
+dir1=$dir/T$TEMPP.eps$EPS.long
+xtcfile=run.$RELBOW.long.xtc
+tprfile=run.$RELBOW.tpr
+
+#for i in `seq 26 40`
+#do
+#I="$I equil.$RELBOW.part00$i.xtc"
+#E="$E equil.$RELBOW.part00$i.edr"
+#done 
+
+#$GMX trjcat -f run.$RELBOW.part*.xtc -overwrite -e 80000 -o $xtcfile
+
+#$GMX eneconv -f run.$RELBOW.part*.edr -dt 0.5 -e 80000 -o ener.edr
+
+#wait 
+
+#$GMX distance -f $xtcfile -s $tprfile -n $ndx -dt 0.5 -oall elbow2.xvg -select 'group "P-U8" plus group "A-U60"' -xvg none &
+#
+#$GMX distance -f $xtcfile -s $tprfile -n $ndx -dt 0.5 -oall CCA.xvg -select 'group "P-A76-O3" plus group "A-A76-O3"' -xvg none &
+#
+#
+#$GMX distance -f $xtcfile -s $tprfile -n $ndx -dt 0.5 -oall R_arm1.xvg -select 'group "P-G67-C5" plus group "A-G4-C3"' -xvg none 
+#
+#$GMX distance -f $xtcfile -s $tprfile -n $ndx -dt 0.5 -oxyz umbcoord.xvg -select 'cog of group "P-elbow" plus cog of group "A-elbow"' -xvg none &
+
+#echo -e "11\n" | $GMX energy -f ener.edr -o PEfull.xvg -xvg none &
+#
+#echo -e "10\n" | $GMX energy -f ener.edr -o umbE.xvg -xvg none &
+
+###### calculate the effective Xelbow
+#echo -e "44" | $GMX traj -f $xtcfile -s $tprfile -n $ndx -dt 0.5 -xvg none -ox $outdir/A_U60_O3.xvg &
+#echo -e "48" | $GMX traj -f $xtcfile -s $tprfile -n $ndx -dt 0.5 -xvg none -ox $outdir/P_C2619.xvg &
+#echo -e "49" | $GMX traj -f $xtcfile -s $tprfile -n $ndx -dt 0.5 -xvg none -ox $outdir/P_C55.xvg &
+#echo -e "50" | $GMX traj -f $xtcfile -s $tprfile -n $ndx -dt 0.5 -xvg none -ox $outdir/P_G710.xvg &
+
+###### calculate the second umbrella coordinate Rarm
+$GMX distance -f $xtcfile -s $tprfile -n $ndx -dt 0.5 -oall $outdir/Rarm.R.$RELBOW.xvg -select 'group "P-U8" plus cog of group "A-arm_end"' -xvg none 
+wait
+
+rm \#*

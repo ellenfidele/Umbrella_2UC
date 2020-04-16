@@ -1,0 +1,48 @@
+#!/bin/bash
+#SBATCH -N NNODES
+#SBATCH -n NPROCS
+#SBATCH --time=6:00:00
+#SBATCH --exclusive
+#SBATCH -J FB.RNUM1.LNUM2.ORIG
+#SBATCH -p partition
+
+##. /etc/profile.d/modules.sh
+##module add gcc
+##module add mvapich2/gcc
+##module add c3ddb/gromacs/4.5.3
+##mdrun -nt 64 -s ../run.tpr -noddcheck -v -maxh 1 -cpi state.cpt -noappend 
+
+#GMX=/home/whitford/BIN/nd/gmx-5.1.4_gnu6_openmpi3.1.2_redwood/bin/gmx_mpi
+GMX=/home/whitford/BIN/nd/gmx-5.1.4_gnu6_openmpi3.1.2/bin/gmx_mpi
+
+RELBOW=NUM1
+L14_dist=NUM2
+dir=/scratch/ellenwang/Umbrella/full_ribo_umbRun/std_smog_2UC
+top=$dir/system/6qnr-AA.noL10.nofirstU.condense.top
+ndx=$dir/system/elbow_cca_2UC.noL10.nofirstU.ndx
+
+
+EPS=400
+TEMPP=60
+dir1=$dir/T$TEMPP.eps$EPS.long
+ddir=$ddir1/R.$RELBOW.L.$L14_dist
+##rm -r $ddir
+mkdir -p  $ddir
+cd $ddir
+#so it works for initialization
+
+#minimize
+sed 's/ELBOWDISTANCE/'$RELBOW'/g;s/L14DISTANCE/'$L14_dist'/g;s/EPSILONN/'$EPS'/g;s/TEMPP/'$TEMPP'/g' $dir/md.min.TMP > md.$RELBOW.$L14_dist.min.mdp
+$GMX grompp -f md.$RELBOW.$L14_dist.min.mdp -n $ndx -c $dir1/equil.$RELBOW.$L14_dist.gro -p $top -o min.$RELBOW.$L14_dist.tpr 
+#mpirun -n 8 $GMX mdrun -v -ntomp 14 -dd 1 1 8 -noddcheck -s min.$RELBOW.tpr  -c min.$RELBOW.gro 
+mpirun -np NPROCS $GMX mdrun -v -ntomp OMPPR -dd DDCOMP -noddcheck -s min.$RELBOW.$L14_dist.tpr  -c min.$RELBOW.$L14_dist.gro 
+
+
+#RUN
+sed 's/ELBOWDISTANCE/'$RELBOW'/g;s/L14DISTANCE/'$L14_dist'/g;s/EPSILONN/'$EPS'/g;s/TEMPP/'$TEMPP'/g' $dir/mdRUN.TMP > run.$RELBOW.$L14_dist.mdp
+$GMX grompp -f run.$RELBOW.$L14_dist.mdp -n $ndx -c min.$RELBOW.$L14_dist.gro -p $top -o run.$RELBOW.$L14_dist.tpr
+#mpirun -n 8 $GMX mdrun -v -ntomp 14 -dd 1 1 8 -noddcheck -s run.$RELBOW.tpr -cpi run0.cpt -cpo run.$RELBOW.cpt -noappend -deffnm run.$RELBOW -nsteps 1000000 -px pullx.$RELBOW.p0.xvg
+mpirun -np NPROCS $GMX mdrun -v -ntomp OMPPR -dd DDCOMP -noddcheck -s run.$RELBOW.$L14_dist.tpr -cpi run0.cpt -cpo run.$RELBOW.$L14_dist.cpt -noappend -deffnm run.$RELBOW.$L14_dist -nsteps 5000000 -px pullx.$RELBOW.$L14_dist.xvg
+
+wait 
+

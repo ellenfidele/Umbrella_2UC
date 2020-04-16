@@ -1,0 +1,8 @@
+for R in 5.8 6.4 6.6 6.8 7.0
+do
+	sed "s/NUMM/$R/g" submit.MultX.bash > 60.ex1.0.eps400.start.6.4/submit$R
+	cd 60.ex1.0.eps400.start.6.4
+	sbatch submit$R
+	cd -
+	sleep 1
+done
