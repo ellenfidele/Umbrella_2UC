@@ -14,7 +14,7 @@ TEMPP=60
 
 #IMPORTANT SETTINGS
 
-dir=/scratch/ellenwang/Umbrella/full_ribo_umbRun/std_smog_2UC
+dir=$(pwd)
 top=$dir/system/6qnr-AA.noL10.nofirstU.condense.top
 ndx=$dir/system/elbow_cca_2UC.noL10.nofirstU.ndx
 RELBOW=NUMM

@@ -10,7 +10,7 @@ GMX=/home/whitford/BIN/nd/gmx-5.1.4_gnu6_openmpi3.1.2/bin/gmx_mpi
 #GMX=/home/whitford/BIN/nd/gmx-5.1.4_gnu6_openmpi3.1.2_redwood/bin/gmx_mpi
 
 RELBOW=NUM1
-dir=/scratch/ellenwang/Umbrella/full_ribo_umbRun/std_smog_trial2
+dir=$(pwd)
 top=$dir/system/6qnr-AA.noL10.nofirstU.condense.top
 #ndx=$dir/system/elbow_cca.noL10.nofirstU.ndx
 ndx=$dir/system/Rarm.noL10.nofirstU.ndx

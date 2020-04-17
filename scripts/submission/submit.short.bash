@@ -11,7 +11,7 @@ GMX=/home/whitford/BIN/nd/gmx-5.1.4_gnu6_openmpi3.1.2_redwood/bin/gmx_mpi
 #GMX=/home/whitford/BIN/nd/gmx-5.1.4_gnu6_openmpi3.1.2/bin/gmx_mpi
 EPS=400
 TEMPP=60
-dir=/scratch/ellenwang/Umbrella/full_ribo_umbRun/std_smog_2UC
+dir=$(pwd)
 ddir=$dir/$TEMPP.ex1.0.eps$EPS.start.6.4
 tabledir=$(pwd)
 #rm -r $ddir
