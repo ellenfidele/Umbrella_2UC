@@ -22,7 +22,7 @@ smog2 -i 6qnr-bioassembly1-phe.adjusted.box.mod.noL10.nofirstU.pdb -t /your/smog
 ```
 smog2 -i 6qnr-AT.noL10.nofirstU.pdb -t /your/smog/template -dname 6qnr-AT.noL10.nofirstU
 ```
-*The topology file of AT configuration will be used for comparing contacts with A-site tRNA and determining the A-CCA and A-Arm unique contacts*
+*The topology file of AT configuration will be used for comparing contacts associated with A-site tRNA and determining the unique contacts for AA configuration*
 
 ### Condense the topology file
 
@@ -43,9 +43,28 @@ The condensed .top file (`6qnr-AA.noL10.nofirstU.condense.top`) only needs to in
     1. What are the unique contacts of A-site tRNA in AA configuration?
         For a contact that associates with A-site tRNA, if the distance between the two atoms that form this contact in the AA configuration is less than a half of the distance between the same two atoms in the AT configuration, then this contact is a unique contact to AA configuration. There are 354 unique contacts of A-site tRNA in AA configuration.
         
-2. Remove the contacts between A-arm or A-CCA and the rest part of the ribosome (the parts except A-site tRNA)
+2. Remove the contacts between A-tRNA-arm-CCA-PHE region and the rest part of the ribosome (the parts except A-site tRNA)
 This step can be achived by `smog_scale-energies` or a self-constructed script. If you are doing it using your own script, don't forget to make the corresponding changes in the [ exclusions ] section.
 
 3. Remove the harmonic bonds between A-site tRNA (CCA end) and the chelated Mg2+ or K+
 
 *After the above adjustments, please double check the file names of the .itp file in the condensed topology file to ensure the correct version of .itp files is used for the simulation.*
+
+### Groups mentioned in .ndx file
+
+- A-elbow: res 14A to 21A and res 47U to 64A on A site tRNA (serial 52021 to 52193 and serial 52742 to 53118)
+- P-elbow: res 14A to 21A and res 47U to 64A on A site tRNA (serial 53659 to 53831 and 54380 to 54763)
+- A-CCA: res 74C to 76 A of A site tRNA (serial 53313 to 53374)
+- P-CCA: res 74 to 76 of P site tRNA (serial 54958 to 55019)
+- notAtRNA: not A site tRNA (not serial 51748 to 53385)
+- A-A76-O3: O3* of residue 76A on A site tRNA (serial 53361)
+- P-A76-O3: O3* of residue 76A on P site tRNA (serial 55006)
+- A-U47: O3* of 47U of A site tRNA (serial 52750)
+- P-U8: O3* of 8U of P site tRNA (serial 53547)
+- A-U60: O3* of res 60U of A site tRNA (serial 53022)
+- P-G67-C5: C5* of res 67G of P site tRNA (serial 54811)
+- A-G4-C3: C3* of res 4G of A site tRNA (serial 51815)
+- A-tRNA-arm-CCA-PHE: serial 51748 to 51895 and serial 53119-53385
+- L14_full: res 8813 to 8934
+
+
